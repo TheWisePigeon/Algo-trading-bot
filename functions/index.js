@@ -11,7 +11,7 @@ exports.wisetrader = functions.https.onRequest( async (request, response)=>{
     const tweets = await scrape()
 
     const gptCompletion = await openai.createCompletion("text-davinci-001", {
-        prompt: "Jim Cramer recommends selling the following stocks tickers: ",
+        prompt: ` ${tweets} Jim Cramer recommends selling the following stocks tickers: `,
         temperature: 0.7,
         max_tokens: 32,
         top_p: 1,
