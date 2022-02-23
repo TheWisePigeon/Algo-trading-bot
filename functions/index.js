@@ -6,7 +6,7 @@ const configuration = new Configuration({
 
 const openai= new OpenAIApi(configuration);
 
-exports.wisetrader = functions.https.onRequest((request, response)=>{
+exports.wisetrader = functions.https.onRequest( async (request, response)=>{
 
     const gptCompletion = await openai.createCompletion("text-davinci-001", {
         prompt: "Jim Cramer recommends selling the following stocks tickers: ",
