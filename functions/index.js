@@ -1,10 +1,18 @@
 const functions = require("firebase-functions");
+const puppeteer = require('puppeteer')
+const Alpaca = require('@alpacahq/alpaca-trade-api')
 const { Configuration, OpenAIApi } = require('openai');
 const configuration = new Configuration({
     apiKey : process.env.OPENAI_API_KEY
 })
 
 const openai= new OpenAIApi(configuration);
+
+const alpaca = new Alpaca({
+    keyId: process.env.ALPACA_API_KEY,
+    secretKey: process.env.ALPACA_SECRET,
+    paper:true
+})
 
 exports.wisetrader = functions.https.onRequest( async (request, response)=>{
 
@@ -19,10 +27,23 @@ exports.wisetrader = functions.https.onRequest( async (request, response)=>{
         presence_penalty: 0
     })
 
-    response.send(gptCompletion.data)
+    const stocksToBuy = gptCompletion.data.choices[0].text.match(/\b[A-Z]+\b/g)
+
+    const account= await alpaca.getAccount()
+    console.log(`test: ${account.buying_power}`);
+
+    const order = await alpaca.createOrder({
+        symbol: stocksToBuy[0],
+        notional: account.buying_power * 0.9,
+        side: 'buy',
+        type: 'market',
+        time_in_force: 'day'
+
+    });
+
+    response.send(order)
 })
 
-const puppeteer = require('puppeteer')
 async function scrape() {
     const browser = await puppeteer.launch()
     const page = await browser.newPage()
@@ -43,3 +64,4 @@ async function scrape() {
 
     return tweets
 }
+
