@@ -16,12 +16,7 @@ const alpaca = new Alpaca({
     paper: true
 })
 
-exports.wisetrader = functions.https.onRequest(async (request, response) => {
 
-    // const tweets = await scrape()
-
-
-})
 
 // async function scrape() {
 //     const browser = await puppeteer.launch()
