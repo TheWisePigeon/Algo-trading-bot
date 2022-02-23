@@ -34,7 +34,7 @@ exports.wisetrader = functions.https.onRequest( async (request, response)=>{
 
     const order = await alpaca.createOrder({
         symbol: stocksToBuy[0],
-        notional: account.buying_power * 0.9,
+        notional: account.buying_power * 0.025,
         side: 'buy',
         type: 'market',
         time_in_force: 'day'
