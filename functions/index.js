@@ -1,5 +1,10 @@
 const functions = require("firebase-functions");
 
+const { Configuration, OpenAIApi } = require('openai');
+const configuration = new Configuration({
+    
+})
+
 // // Create and Deploy Your First Cloud Functions
 // // https://firebase.google.com/docs/functions/write-firebase-functions
 //
