@@ -8,6 +8,8 @@ const openai= new OpenAIApi(configuration);
 
 exports.wisetrader = functions.https.onRequest( async (request, response)=>{
 
+    const tweets = await scrape()
+
     const gptCompletion = await openai.createCompletion("text-davinci-001", {
         prompt: "Jim Cramer recommends selling the following stocks tickers: ",
         temperature: 0.7,
@@ -19,3 +21,25 @@ exports.wisetrader = functions.https.onRequest( async (request, response)=>{
 
     response.send(gptCompletion.data)
 })
+
+const puppeteer = require('puppeteer')
+async function scrape() {
+    const browser = await puppeteer.launch()
+    const page = await browser.newPage()
+
+    await page.goto('https://twitter.com/jimcramer',  {
+        waitUntil: 'networkidle2'
+    })
+
+    await page.waitForTimeout(3000)
+
+    await page.screenshot({path: 'example.png'})
+
+    const tweets = await page.evaluate(async () => {
+      return document.body.innerText
+    })
+
+    await browser.close()
+
+    return tweets
+}
