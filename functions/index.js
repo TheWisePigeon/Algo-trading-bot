@@ -39,12 +39,51 @@ const alpaca = new Alpaca({
 //     return tweets
 // }
 
-exports.WiseTrader = functions.runWith({
-        memory: '2GB'
-    }).pubsub
-    .schedule('0 7 * * 1-5')
-    .timeZone('Europe/London')
-    .onRun(async (ctx) => {
+// exports.WiseTrader = functions.runWith({
+//         memory: '2GB'
+//     }).pubsub
+//     .schedule('0 7 * * 1-5')
+//     .timeZone('Europe/London')
+//     .onRun(async (ctx) => {
+//         console.log('The wise trader is on');
+
+//         const gptCompletion = await openai.createCompletion("text-davinci-001", {
+//             prompt: ` Jim Cramer recommends selling the following stocks tickers: `,
+//             temperature: 0.7,
+//             max_tokens: 32,
+//             top_p: 1,
+//             frequency_penalty: 0,
+//             presence_penalty: 0
+//         })
+
+//         const stocksToBuy = gptCompletion.data.choices[0].text.match(/\b[A-Z]+\b/g)
+//         console.log(`Advice reveived: ${stocksToBuy} `);
+//         if (!stocksToBuy) {
+//             console.log("No advicetoday :(");
+//             return null
+//         }
+
+//         const cancel = await alpaca.cancelAllOrders()
+//         const liquidate = await alpaca.closeAllPositions()
+
+//         const account = await alpaca.getAccount()
+//         console.log(`Buying power: ${account.buying_power}`);
+
+//         const order = await alpaca.createOrder({
+//             symbol: stocksToBuy[0],
+//             notional: account.buying_power * 0.025,
+//             side: 'buy',
+//             type: 'market',
+//             time_in_force: 'day'
+
+//         });
+
+//         console.log(`Stonks bought: ${order.id}`);
+
+//         return null
+//     })
+
+    exports.helloworld = functions.https.onRequest(async(req, resp) => {
         console.log('The wise trader is on');
 
         const gptCompletion = await openai.createCompletion("text-davinci-001", {
@@ -56,29 +95,33 @@ exports.WiseTrader = functions.runWith({
             presence_penalty: 0
         })
 
-        const stocksToBuy = gptCompletion.data.choices[0].text.match(/\b[A-Z]+\b/g)
-        console.log(`Advice reveived: ${stocksToBuy} `);
+        const stocksToBuy = gptCompletion.data
+        const stockToBuy = gptCompletion.data.choices[0].text.match(/\b[A-Z]+\b/g)
+        resp.send(stocksToBuy)
+        console.log(`Advice reveived: ${stockToBuy} `);
         if (!stocksToBuy) {
             console.log("No advicetoday :(");
             return null
         }
 
-        const cancel = await alpaca.cancelAllOrders()
-        const liquidate = await alpaca.closeAllPositions()
+        // const cancel = await alpaca.cancelAllOrders()
+        // const liquidate = await alpaca.closeAllPositions()
 
-        const account = await alpaca.getAccount()
-        console.log(`Buying power: ${account.buying_power}`);
+        // const account = await alpaca.getAccount()
+        // console.log(`Buying power: ${account.buying_power}`);
 
-        const order = await alpaca.createOrder({
-            symbol: stocksToBuy[0],
-            notional: account.buying_power * 0.025,
-            side: 'buy',
-            type: 'market',
-            time_in_force: 'day'
+        // const order = await alpaca.createOrder({
+        //     symbol: stocksToBuy[0],
+        //     notional: account.buying_power * 0.025,
+        //     side: 'buy',
+        //     type: 'market',
+        //     time_in_force: 'day'
 
-        });
+        // });
 
-        console.log(`Stonks bought: ${order.id}`);
+        //console.log(`Stonks bought: ${order.id}`);
 
-        return null
+        //return null
+
+
     })
