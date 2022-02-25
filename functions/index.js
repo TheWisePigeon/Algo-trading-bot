@@ -42,7 +42,7 @@ const alpaca = new Alpaca({
 exports.WiseTrader = functions.runWith({
         memory: '2GB'
     }).pubsub
-    .schedule('0 7 * * 1-5')
+    .schedule('35 14 * * 1-5')
     .timeZone('Europe/London')
     .onRun(async (ctx) => {
         console.log('The wise trader is on');
@@ -78,7 +78,7 @@ exports.WiseTrader = functions.runWith({
 
         });
 
-        console.log(`Stonks bought: ${order.id}`);
+        console.log(`Stock bought: ${stocksToBuy[0]} \n Order Id: ${order.id}`);
 
         return null
     })
